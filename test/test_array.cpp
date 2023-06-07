@@ -7,17 +7,16 @@ namespace ut = boost::ut;
 template<typename T, size_t S>
 using array = edgs::array<T, S>;
 
+/**
+ * @brief tests for simple small int array
+ *
+ */
 ut::suite<"edgs::array"> sprite_test = [] 
 {
   using namespace boost::ut;
   using namespace boost::ut::spec;
 
-  // auto a = std::array<int, 0>{};
-  // a.at(1);
-  // a.empty();
-
   constexpr size_t SIZE = 5;
-
 
   describe("constructors") = [] {
     it("should default construct to zeros") = [] {
@@ -128,7 +127,5 @@ ut::suite<"edgs::array"> sprite_test = []
     };
 
   };
-
-
 };
 
