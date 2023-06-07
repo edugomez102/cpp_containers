@@ -1,20 +1,17 @@
+#include "util.hpp"
 
-#include <algorithm>
-#include <cstddef>
 #include <initializer_list>
-#include <iterator>
-#include <memory>
+#include <stdexcept>
 
 namespace edgs {
+
+  // No support for zero-sized array
 
   template <typename T, size_t S>
   struct array {
 
     array() = default;
-    array(T data[S])
-    {
-      std::copy(data, data + S, buf_);
-    }
+    array(T data[S]) { edgs::copy(data, data + S, buf_); }
 
     array(std::initializer_list<T> c)
     {
@@ -24,30 +21,34 @@ namespace edgs {
       }
     }
 
-    constexpr size_t size() const noexcept { return S; }
+    [[nodiscard]] constexpr size_t size()  const noexcept { return S; }
+    [[nodiscard]] constexpr size_t empty() const noexcept { return S == 0; }
 
-    // undefined behaviour if out of size
-    T& operator[](const size_t rhs) noexcept { return buf_[rhs]; }
+
+    // undefined behaviour if out of range
+    [[nodiscard]] T& operator[](const size_t rhs) noexcept { return buf_[rhs]; }
 
     const T& operator[](const size_t rhs) const noexcept
     {
       return const_cast<array<T, S>*>(this)->operator[](rhs);
     }
 
-    [[nodiscard]] T& at(const size_t rhs) const
+    T& at(const size_t i)
     {
-      // if(buf_[rhs] == 0) {
-      //   buf_[rhs] == rhs;
-      // }
-      // else {
-      //   
-      // }
+      if (i < 0 || S <= i) throw std::out_of_range("size is " + S);
+        return buf_[i];
+    }
+
+    const T& at(const size_t i) const 
+    { 
+      return const_cast<array<T, S>*>(this)->at(i);
     }
 
     auto begin() const { return std::begin(buf_); } 
     auto end()   const { return std::end(buf_); }
 
     T* data() { return buf_; }
+    const T* data() const { return buf_; }
 
   private:
     T buf_[S]{0};
