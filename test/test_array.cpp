@@ -1,6 +1,5 @@
 #include <array.hpp>
 #include <ut.hpp>
-#include <array>
 
 namespace ut = boost::ut;
 
@@ -27,14 +26,14 @@ ut::suite<"edgs::array"> sprite_test = []
     };
 
     it("should construct from initalizer list") = [] {
-      array<int, 5> a = {1, 2, 3, 4, 5};
+      array<int, 5> a{1, 2, 3, 4, 5};
       auto n = a.data();
       expect(n[0] == 1 && n[1] == 2 &&
              n[2] == 3 && n[3] == 4 && n[4] == 5 );
     };
 
     it("should construct from initalizer list leaving zeros") = [] {
-      array<int, 5> a = {1, 2};
+      array<int, 5> a{1, 2};
       auto n = a.data();
       expect(n[0] == 1 && n[1] == 2 &&
              n[2] == 0 && n[3] == 0 && n[4] == 0 );
@@ -57,7 +56,18 @@ ut::suite<"edgs::array"> sprite_test = []
     };
   };
 
-  describe("functions") = [] {
+  describe("copies") = [] {
+    it("should copy its conents") = [] {
+      array<int, 5> a{2, 2, 2, 2};
+      array<int, 5> b = a;
+      // expect(a[0] == b[0] && a[1] == b[1]);
+      a[0] = 9;
+      expect(a[0] == 9 && b[0] == 2);
+    };
+  };
+
+
+  describe("capacity functions") = [] {
     array<int, 5> a = {1, 2, 3, 4, 5};
     it("shold return array size") = [&]{
       expect(a.size() == SIZE);

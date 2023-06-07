@@ -1,3 +1,5 @@
+#pragma once 
+
 #include "util.hpp"
 
 #include <initializer_list>
@@ -13,22 +15,26 @@ namespace edgs {
     array() = default;
     array(T data[S]) { edgs::copy(data, data + S, buf_); }
 
-    array(std::initializer_list<T> c)
+    array(const std::initializer_list<T>& c)
     {
-      T* ptr = buf_;
-      for (const T& i : c) {
-        *ptr = i; ptr++;
-      }
+      edgs::fill_from_initializer_list(c, buf_);
     }
+
+    //--------------------------------------------------------------------
+    // Capacity
+    //--------------------------------------------------------------------
 
     [[nodiscard]] constexpr size_t size()  const noexcept { return S; }
     [[nodiscard]] constexpr size_t empty() const noexcept { return S == 0; }
 
+    //--------------------------------------------------------------------
+    // Access
+    //--------------------------------------------------------------------
 
     // undefined behaviour if out of range
     [[nodiscard]] T& operator[](const size_t rhs) noexcept { return buf_[rhs]; }
 
-    const T& operator[](const size_t rhs) const noexcept
+    [[nodiscard]] const T& operator[](const size_t rhs) const noexcept
     {
       return const_cast<array<T, S>*>(this)->operator[](rhs);
     }
@@ -44,14 +50,19 @@ namespace edgs {
       return const_cast<array<T, S>*>(this)->at(i);
     }
 
-    auto begin() const { return std::begin(buf_); } 
-    auto end()   const { return std::end(buf_); }
-
     T* data() { return buf_; }
     const T* data() const { return buf_; }
 
+    //--------------------------------------------------------------------
+    // Iterators
+    //--------------------------------------------------------------------
+
+    auto begin() const { return std::begin(buf_); } 
+    auto end()   const { return std::end(buf_); }
+
+
   private:
+
     T buf_[S]{0};
   };
-
 }
