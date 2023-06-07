@@ -3,6 +3,10 @@
 
 namespace ut = boost::ut;
 
+/**
+ * @brief tests for utility functions
+ *
+ */
 ut::suite<"edgs::util"> util_test = [] 
 {
   using namespace boost::ut;
