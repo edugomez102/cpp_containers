@@ -101,7 +101,23 @@ ut::suite<"edgs::array"> sprite_test = []
   };
 
   describe("iterators" )   = [] {
+    using array_it = array<int, 5>::array_it;
     array<int, 5> a = {1, 0, 0, 0, 2};
+
+    it("should point to start of array data") = [&] {
+      array_it it = a.begin();
+      const int& it_ref = it.operator*();
+      expect(it_ref == *a.data());
+      expect(it == a.data());
+    };
+
+    it("should point to next element of array data and back to first") = [&] {
+      array_it it = a.begin();
+      ++it;
+      expect(it == a.data() + 1);
+      --it;
+      expect(it == a.data() && *it == a[0]);
+    };
 
     it("begin() should point to first element") = [&] {
       expect(a.begin() == a.data() &&
@@ -111,6 +127,17 @@ ut::suite<"edgs::array"> sprite_test = []
     it("end() should point to last element") = [&] {
       expect(a.end() == a.data() + SIZE &&
             *a.end() == a[SIZE]);
+    };
+
+    it("should be able to iterate in range based for loop") = [] {
+      array<int, 5> a = {1, 0, 0, 0, 2};
+      int count = 0;
+
+      for (int it : a) {
+        if(count == 0) expect(it == 1);
+        if(count == 4) expect(it == 2);
+        count++;
+      }
     };
   };
 

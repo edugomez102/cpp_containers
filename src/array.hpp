@@ -1,6 +1,7 @@
 #pragma once 
 
 #include "util.hpp"
+#include "contiguous_iterator.hpp"
 
 #include <initializer_list>
 #include <stdexcept>
@@ -57,9 +58,11 @@ namespace edgs {
     // Iterators
     //--------------------------------------------------------------------
 
-    auto begin() const { return std::begin(buf_); } 
-    auto end()   const { return std::end(buf_); }
+    using iterator = cont_it<T>;
+    using array_it = array<T, S>::iterator;
 
+    array_it begin() { return array_it::begin(buf_);   }
+    array_it end()   { return array_it::end(buf_ + S);   }
 
   private:
 
