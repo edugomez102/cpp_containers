@@ -10,7 +10,7 @@ using array = edgs::array<T, S>;
  * @brief tests for simple small int array
  *
  */
-ut::suite<"edgs::array"> sprite_test = [] 
+ut::suite<"edgs::array"> test_array = [] 
 {
   using namespace boost::ut;
   using namespace boost::ut::spec;
@@ -121,12 +121,12 @@ ut::suite<"edgs::array"> sprite_test = []
 
     it("begin() should point to first element") = [&] {
       expect(a.begin() == a.data() &&
-            *a.begin() == a[0]);
+             a.begin() == &a[0]);
     };
 
     it("end() should point to last element") = [&] {
       expect(a.end() == a.data() + SIZE &&
-            *a.end() == a[SIZE]);
+             a.end() == &a[SIZE]);
     };
 
     it("should be able to iterate in range based for loop") = [] {
