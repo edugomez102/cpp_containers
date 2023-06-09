@@ -11,7 +11,7 @@ namespace edgs {
   void copy(T* start, T* end, T* target)
   {
     for (size_t i = 0; i < size_t(end - start); i++)
-      target[i] = start[i];
+      target[i] = std::move(start[i]);
   };
 
   template <typename T>
@@ -32,9 +32,9 @@ namespace edgs {
 
   struct Dummy{
 
-    Dummy() = default;
-    Dummy(const int a, const float b) 
-      : a_{a}, b_{b}
+    Dummy() { printf("Dummy is constructed\n"); }
+    Dummy(const int a) 
+      : a_{a}
     {
       printf("Dummy is constructed\n");
     }
@@ -45,11 +45,11 @@ namespace edgs {
 
     friend std::ostream& operator<< (std::ostream& o, const Dummy& d)
     {
-      return o << "a:" << d.a_ << " b:" << d.b_;
+      return o << "a:" << d.a_ ;
     }
 
-    int   a_{0};
-    float b_{0.f};
+    int   a_{5};
+    // float b_{0.f};
   };
 }
 

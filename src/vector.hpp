@@ -1,39 +1,55 @@
 #pragma once 
 
 #include "util.hpp"
+#include "contiguous_iterator.hpp"
+#include "allocator.hpp"
 
 #include <chrono>
 #include <cstdlib>
 #include <initializer_list>
+#include <memory>
 
 namespace edgs{
 
+  /**
+   * struct vector - vector container implementation
+   *
+   * @tparam T type of container
+   */
   template <typename T>
   struct vector{
 
-    // default vector with size 1
+    vector(const vector&)  = delete;
+    vector(const vector&&) = delete;
+    vector& operator==(const vector&)  = delete;
+    vector& operator==(const vector&&) = delete;
+
     vector() 
+      : al_{allocator<T>{}}
     {
-      start_ = new T[capacity_];
+      create_storage(0);
     }
 
     vector(size_t l, T value)
-      : index_{l}
-      , capacity_{l}
+      : al_{allocator<T>{}}
     {
-      start_ = new T[capacity_];
+      create_storage(l);
       edgs::fill(start_, start_ + capacity_, value);
+      index_ = capacity_;
     }
 
     vector(const std::initializer_list<T>& c)
+      : al_{allocator<T>{}}
     {
-      start_ = new T[capacity_];
+      create_storage(c.size());
       edgs::fill_from_initializer_list(c, start_);
+      index_ = capacity_;
     }
 
     ~vector() 
     {
-      delete[] start_;
+      clear();
+      al_.deallocate();
     }
 
     //--------------------------------------------------------------------
@@ -51,7 +67,10 @@ namespace edgs{
     // Modifiers
     //--------------------------------------------------------------------
 
-    // clear
+    void clear() {
+      al_.destroy(index_);
+      index_ = 0;
+    }
     // insert(size_t position, const T& value)
     // emplace
     // resize
@@ -59,16 +78,22 @@ namespace edgs{
     void push_back(const T& value)
     {
       if (index_ >= capacity_)
-        reallocate(capacity_ * 2);
+      {
+        if(empty()) {
+          create_storage(1);
+          reallocate(1);
+        }
+        else {
+          reallocate(capacity_ * 2);
+        }
+      }
       insert_element(value);
     }
 
     void pop_back() 
     {
-      // TODO should also delete unused resources ~T()
-
       if (index_ > 0)
-        index_--;
+        al_.destroy(index_--);
     }
 
     //--------------------------------------------------------------------
@@ -100,17 +125,20 @@ namespace edgs{
     // Iterators
     //--------------------------------------------------------------------
 
-    auto begin() const { return std::begin(start_); } 
-    auto end()   const { return std::end(start_); }
+    using iterator = cont_it<T>;
+    using vector_it = vector<T>::iterator;
 
+    vector_it begin() { return vector_it::begin(start_);        }
+    vector_it end()   { return vector_it::end(start_ + index_); }
 
   private:
 
-    void reallocate(size_t newsize)
+    void reallocate(const size_t newsize)
     {
-      T* aux = new T[newsize];
+      T* aux = al_.allocate(newsize);
+
       edgs::copy(start_, start_ + capacity_, aux);
-      delete[] start_;
+      allocator<T>::deallocate(start_);
 
       start_    = aux;
       capacity_ = newsize;
@@ -121,9 +149,20 @@ namespace edgs{
       start_[index_++] = value;
     }
 
+    void create_storage(const size_t n)
+    {
+      start_ = al_.allocate(n);
+      index_ = 0;
+      capacity_ = n;
+    }
+
+  private:
+
     T* start_{nullptr};
     size_t index_{0};
-    size_t capacity_{1};
+    size_t capacity_{0};
+
+    allocator<T> al_{};
 
   };
 }

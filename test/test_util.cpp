@@ -23,5 +23,4 @@ ut::suite<"edgs::util"> util_test = []
            t[2] == 3 && t[3] == 4);
   };
 
-
 };

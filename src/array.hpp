@@ -8,8 +8,13 @@
 
 namespace edgs {
 
-  // No support for zero-sized array
-
+  /**
+   * struct array - array container implementation
+   * Does NOT support zero-sized arrays
+   *
+   * @tparam T container type
+   * @tparam S array fixed size
+   */
   template <typename T, size_t S>
   struct array {
 
