@@ -1,5 +1,6 @@
 #include <ut.hpp>
 #include <util.hpp>
+#include <memory>
 
 namespace ut = boost::ut;
 
@@ -21,6 +22,13 @@ ut::suite<"edgs::util"> util_test = []
 
     expect(t[0] == 1 && t[1] == 2 && 
            t[2] == 3 && t[3] == 4);
+  };
+
+  it("shoud be able to move basic type") = [] {
+    std::unique_ptr<int> p{};
+    auto up = std::make_unique<int>(50);
+    p = edgs::move(up);
+    expect(up == nullptr && *p.get() == 50);
   };
 
 };

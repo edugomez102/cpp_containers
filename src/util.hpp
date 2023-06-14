@@ -11,7 +11,17 @@ namespace edgs {
   void copy(T* start, T* end, T* target)
   {
     for (size_t i = 0; i < size_t(end - start); i++)
-      target[i] = std::move(start[i]);
+      target[i] = start[i];
+  };
+
+  template <typename T>
+  T&& move(T& arg) { return static_cast<T&&>(arg); }
+
+  template <typename T>
+  void move(T* start, T* end, T* target)
+  {
+    for (size_t i = 0; i < size_t(end - start); i++)
+      target[i] = move(start[i]);
   };
 
   template <typename T>
