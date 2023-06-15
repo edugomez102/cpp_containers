@@ -9,7 +9,8 @@
 namespace edgs {
 
   /**
-   * struct array - array container implementation
+   * struct array - static contiguous array
+   *
    * Does NOT support zero-sized arrays
    *
    * @tparam T container type
