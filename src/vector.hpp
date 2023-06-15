@@ -12,12 +12,15 @@
 namespace edgs{
 
   /**
-   * struct vector - vector container implementation
+   * struct vector - dynamic contiguous array
    *
    * @tparam T type of container
    */
   template <typename T>
   struct vector{
+
+    using iterator = cont_it<T>;
+    using vector_it = vector<T>::iterator;
 
     vector(const vector&)  = delete;
     vector(const vector&&) = delete;
@@ -28,6 +31,12 @@ namespace edgs{
       : al_{allocator<T>{}}
     {
       create_storage(0);
+    }
+
+    vector(size_t l) 
+      : al_{allocator<T>{}}
+    {
+      create_storage(l);
     }
 
     vector(size_t l, T value)
@@ -67,11 +76,31 @@ namespace edgs{
     // Modifiers
     //--------------------------------------------------------------------
 
-    void clear() {
+    void clear()
+    {
       al_.destroy(index_);
       index_ = 0;
     }
-    // insert(size_t position, const T& value)
+
+    vector_it insert(vector_it position, const T&& value)
+    {
+      if(position != start_ + index_)
+      {
+        const size_t ii = position.base() - start_;
+        if (index_ + ii >= capacity_) reallocate();
+
+        edgs::shift_right(start_ + ii, start_ + capacity_ , 1);
+        start_[ii] = value;
+        ++index_;
+        return vector_it::begin(start_ + ii);
+      }
+      else
+      {
+        push_back(value);
+        return end() - 1;
+      }
+    }
+
     // emplace
     // resize
 
@@ -84,10 +113,11 @@ namespace edgs{
           reallocate(1);
         }
         else {
-          reallocate(capacity_ * 2);
+          reallocate();
         }
       }
-      insert_element(value);
+      start_[index_++] = value;
+
     }
 
     void pop_back() 
@@ -125,11 +155,11 @@ namespace edgs{
     // Iterators
     //--------------------------------------------------------------------
 
-    using iterator = cont_it<T>;
-    using vector_it = vector<T>::iterator;
-
     vector_it begin() { return vector_it::begin(start_);        }
     vector_it end()   { return vector_it::end(start_ + index_); }
+
+    const vector_it begin() const { return vector_it::begin(start_);        }
+    const vector_it end()   const { return vector_it::end(start_ + index_); }
 
   private:
 
@@ -144,10 +174,7 @@ namespace edgs{
       capacity_ = newsize;
     }
 
-    void insert_element(const T& value)
-    {
-      start_[index_++] = value;
-    }
+    void reallocate() { reallocate(capacity_ * 2); }
 
     void create_storage(const size_t n)
     {

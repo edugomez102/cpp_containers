@@ -40,6 +40,13 @@ namespace edgs {
     }
   }
 
+  template <typename T>
+  void shift_right(T* start, T* end, const size_t dif)
+  {
+    for (size_t i = size_t(end - start) - 1 ; i > dif - 1 ; i--)
+      start[i] = start[i - dif];
+  }
+
   struct Dummy{
 
     Dummy() { printf("Dummy is constructed\n"); }
