@@ -103,6 +103,14 @@ ut::suite<"edgs::vector"> vector_test = []
       expect(v[2] == 9 && *r.base() == 9  &&
           precapacity < v.capacity());
     };
+    it("should insert const element at begin") = [] {
+      edgs::vector<int> v{1, 2, 3};
+
+      const int value = 5;
+      auto r = v.insert(v.begin(), value);
+      expect(v[0] == 5 && *r.base() == 5 );
+    };
+
     // "should insert element at given position"_test = [] {
     //   vector<std::string> v{"one", "three"};
     //   auto it = v.insert(v.begin() + 1, "two");

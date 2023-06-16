@@ -82,23 +82,14 @@ namespace edgs{
       index_ = 0;
     }
 
-    vector_it insert(vector_it position, const T&& value)
+    vector_it insert(vector_it position, T&& value)
     {
-      if(position != start_ + index_)
-      {
-        const size_t ii = position.base() - start_;
-        if (index_ + ii >= capacity_) reallocate();
+      return insert_impl(position, std::forward<T>(value));
+    }
 
-        edgs::shift_right(start_ + ii, start_ + capacity_ , 1);
-        start_[ii] = value;
-        ++index_;
-        return vector_it::begin(start_ + ii);
-      }
-      else
-      {
-        push_back(value);
-        return end() - 1;
-      }
+    vector_it insert(vector_it position, const T& value)
+    {
+      return insert_impl(position, value);
     }
 
     // emplace
@@ -181,6 +172,25 @@ namespace edgs{
       start_ = al_.allocate(n);
       index_ = 0;
       capacity_ = n;
+    }
+
+    vector_it insert_impl(vector_it position, const T& value)
+    {
+      if(position != start_ + index_)
+      {
+        const size_t ii = position.base() - start_;
+        if (index_ + ii >= capacity_) reallocate();
+
+        edgs::shift_right(start_ + ii, start_ + capacity_ , 1);
+        start_[ii] = value;
+        ++index_;
+        return vector_it::begin(start_ + ii);
+      }
+      else
+      {
+        push_back(value);
+        return end() - 1;
+      }
     }
 
   private:
