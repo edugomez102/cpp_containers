@@ -164,14 +164,14 @@ namespace edgs {
   private:
 
     void create_first(const T& value) {
-      head = new Node(value);
+      head = new Node{ value };
       tail = head;
       ++size_;
     }
 
     void add_new_tail(const T& value) {
       Node* tmp = tail;
-      tail = new Node{ .data = value };
+      tail = new Node{ value };
       tmp->next = tail;
       tail->prev = tmp;
       ++size_;
@@ -179,13 +179,10 @@ namespace edgs {
 
     void add_new_head(const T& value) {
       Node* tmp = head;
-      head = new Node{ .data = value };
+      head = new Node{ value };
       tmp->prev = head;
-      tail->next = tmp;
+      head->next = tmp;
       ++size_;
-    }
-
-    void fill(size_t num, const T& value) {
     }
 
   private:

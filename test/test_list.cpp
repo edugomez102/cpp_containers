@@ -95,6 +95,10 @@ ut::suite<"edgs::list"> test_list = []
 
     it("should be able to iterate in range based for loop") = [] {
       list<int> a = {1, 0, 0, 0, 2};
+      a.push_back(9);
+      a.pop_back();
+      a.push_front(9);
+      a.pop_front();
       int count = 0;
 
       for (int it : a) {
