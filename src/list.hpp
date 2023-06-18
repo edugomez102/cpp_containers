@@ -18,15 +18,25 @@ namespace edgs {
      * struct Node - bidrectional linked list Node
      */
     struct Node {
+
       T data{};
       Node* next { nullptr };
       Node* prev { nullptr };
+
+      void unhook() {
+        Node* const n_n = next;
+        Node* const p_n = prev;
+        p_n->next = next;
+        n_n->prev = prev;
+      };
     };
 
     /**
      * struct iterator - bidirectional iterator
      */
     struct iterator {
+
+      iterator() = default;
 
       explicit iterator(Node* start)
         : node{start}
@@ -37,16 +47,15 @@ namespace edgs {
       iterator& operator++() { node = node->next; return *this; }
       iterator& operator--() { node = node->prev; return *this;}
 
-      iterator& operator++(int)
-      { iterator tmp = this; node = node->next; return tmp; }
+      iterator operator++(int)
+      { iterator tmp = *this; node = node->next; return tmp; }
 
-      iterator& operator--(int)
-      { iterator tmp = this; node = node->prev; return tmp; }
+      iterator operator--(int)
+      { iterator tmp = *this; node = node->prev; return tmp; }
 
       bool operator!=(const iterator& rhs) { return node != rhs.node; }
       bool operator!=(const T& rhs) { return node != rhs; }
 
-    private:
       Node* node {nullptr};
     };
 
@@ -56,8 +65,7 @@ namespace edgs {
 
     list()
     : head{nullptr}, tail{nullptr}, size_{0}
-    {
-    }
+    { }
 
     list(size_t num, const T& value)
       : head{nullptr}, tail{nullptr}, size_{0}
@@ -95,8 +103,6 @@ namespace edgs {
     //--------------------------------------------------------------------
     // Modifiers
     //--------------------------------------------------------------------
-
-    // erase(iterator pos);
 
     void push_front(const T& value) {
       if (empty())
@@ -139,6 +145,25 @@ namespace edgs {
       size_ = 0;
     }
 
+    iterator erase(iterator pos) {
+      iterator _ret;
+      if(in_middle(pos.node)) {
+        _ret = iterator{pos.node->next};
+        pos.node->unhook();
+        --size_;
+        delete pos.node;
+      }
+      else if(pos.node == head) {
+        _ret = iterator{pos.node->next};
+        pop_front();
+      }
+      else if(pos.node == tail) {
+        _ret = end(); // TODO fix
+        pop_back();
+      }
+      return _ret;
+    }
+
     // TODO undefined behaviour if empty, now it just crashes
     // TODO use iterators
 
@@ -157,7 +182,7 @@ namespace edgs {
     iterator begin() { return iterator(head);}
     const iterator begin() const { return iterator(head);}
 
-    // TODO: end() should point to past-the-end element in the list
+    // TODO: fix, end() should point to past-the-end element in the list
     iterator end()   { return iterator(tail->next);}
     const iterator end() const   { return iterator(tail->next);}
 
@@ -184,6 +209,8 @@ namespace edgs {
       head->next = tmp;
       ++size_;
     }
+
+    bool in_middle(Node* node) { return node != head && node != tail; }
 
   private:
 

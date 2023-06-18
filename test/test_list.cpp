@@ -74,6 +74,21 @@ ut::suite<"edgs::list"> test_list = []
       a.pop_front();
       expect(a.front() == 2 && a.size() == 2);
     };
+
+    it("should erase element in the middle") = [] {
+      list<int> a{1, 2, 3};
+      auto it = a.begin();
+      ++it; // 2
+      auto erased_next = a.erase(it); // next element from ersase
+      expect(a.size() == 2 && *erased_next == 3);
+    };
+
+    it("should erase first element") = [] {
+      list<int> a{1, 2, 3};
+      auto it = a.begin();
+      auto erased_next = a.erase(it); // next element from ersase
+      expect(a.size() == 2 && *erased_next == 2 && a.front() == 2);
+    };
   };
 
   describe("iterators" )   = [] {
