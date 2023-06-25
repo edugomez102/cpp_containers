@@ -25,6 +25,14 @@ namespace edgs {
   };
 
   template <typename T>
+  void swap(T& a, T& b)
+  {
+    T tmp = move(a);
+    a = move(b);
+    b = move(tmp);
+  }
+
+  template <typename T>
   void fill(T* start, T* end, const T& value)
   {
     for (size_t i = 0; i < size_t(end - start); i++)
@@ -66,7 +74,6 @@ namespace edgs {
     }
 
     int   a_{5};
-    // float b_{0.f};
   };
 }
 

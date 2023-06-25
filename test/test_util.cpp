@@ -56,4 +56,11 @@ ut::suite<"edgs::util"> util_test = []
 
   };
 
+  it("shoud be able to swap two ints") = [] {
+    int a = 10;
+    int b = 5;
+    edgs::swap(a, b);
+    expect(a == 5 && b == 10);
+  };
+
 };
