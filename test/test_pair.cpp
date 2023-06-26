@@ -4,7 +4,7 @@
 
 namespace ut = boost::ut;
 
-ut::suite<"std::pair"> pair_test = []
+ut::suite<"edgs::pair"> pair_test = []
 {
   using namespace boost::ut;
   using namespace boost::ut::spec;
