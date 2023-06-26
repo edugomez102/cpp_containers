@@ -42,7 +42,8 @@ namespace edgs {
         : node{start}
       { }
 
-      const T& operator*() const      { return node->data; }
+      // const T& operator*() const      { return node->data; }
+      T& operator*() const      { return node->data; }
 
       iterator& operator++() { node = node->next; return *this; }
       iterator& operator--() { node = node->prev; return *this;}
@@ -53,6 +54,7 @@ namespace edgs {
       iterator operator--(int)
       { iterator tmp = *this; node = node->prev; return tmp; }
 
+      bool operator==(const iterator& rhs) const { return node == rhs.node; }
       bool operator!=(const iterator& rhs) { return node != rhs.node; }
       bool operator!=(const T& rhs) { return node != rhs; }
 
@@ -70,9 +72,7 @@ namespace edgs {
     list(size_t num, const T& value)
       : head{nullptr}, tail{nullptr}, size_{0}
     {
-      create_first(value);
-      for (size_t i = 0; i < num - 1; i++)
-        add_new_tail(value);
+      assign_imp(num, value);
     }
 
     list(const std::initializer_list<T>& c)
@@ -91,6 +91,12 @@ namespace edgs {
 
     ~list() {
       clear();
+    }
+
+    // replaces contents
+    void assign(size_t num, const T& value){
+      clear();
+      assign_imp(num, value);
     }
 
     //--------------------------------------------------------------------
@@ -167,13 +173,17 @@ namespace edgs {
     // TODO undefined behaviour if empty, now it just crashes
     // TODO use iterators
 
-    // T& front()             { return *begin();}
-    T& front()             { return const_cast<T&>(*begin());}
-    // T& front()             { if (head) return head->data; }
-    const T& front() const { if (head) return head->data; }
+    T& front() { 
+      if (head) return head->data;
+      else throw std::out_of_range("empty list");
+    }
+    const T& front() const { return const_cast<list<T>*>(this)->front(); }
 
-    T& back()             { if (tail) return tail->data; }
-    const T& back() const { if (tail) return tail->data; }
+    T& back()             { 
+      if (tail) return tail->data;
+      else throw std::out_of_range("empty list");
+    }
+    const T& back() const { return const_cast<list<T>*>(this)->back(); }
 
     //--------------------------------------------------------------------
     // Iterators
@@ -183,8 +193,8 @@ namespace edgs {
     const iterator begin() const { return iterator(head);}
 
     // TODO: fix, end() should point to past-the-end element in the list
-    iterator end()   { return iterator(tail->next);}
-    const iterator end() const   { return iterator(tail->next);}
+    iterator end()   { return iterator();}
+    const iterator end() const   { return iterator();}
 
   private:
 
@@ -208,6 +218,12 @@ namespace edgs {
       tmp->prev = head;
       head->next = tmp;
       ++size_;
+    }
+
+    void assign_imp(size_t num, const T& value){
+      create_first(value);
+      for (size_t i = 0; i < num - 1; i++)
+        add_new_tail(value);
     }
 
     bool in_middle(Node* node) { return node != head && node != tail; }

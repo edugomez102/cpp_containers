@@ -28,6 +28,13 @@ ut::suite<"edgs::list"> test_list = []
              a.back() == 9);
     };
 
+    it("should assign values") = []{
+      list<int> a;
+      a.assign(5, 9);
+      expect(a.size() == 5 && a.front() == 9 &&
+             a.back() == 9);
+    };
+
     it("should create from initializer list") = []{
       list<int> a = {1, 2, 3, 4};
       expect(a.size() == 4 && a.front() == 1 &&
@@ -122,8 +129,11 @@ ut::suite<"edgs::list"> test_list = []
         count++;
       }
     };
-  };
 
-  
+    it("begin == end if empty") = [&] {
+      list<int> a;
+      expect(a.begin() == a.end() && a.size() == 0);
+    };
+  };
 
 };
