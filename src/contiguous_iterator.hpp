@@ -36,6 +36,7 @@ public:
   cont_it& operator->() { return ptr; }
   cont_it& operator[](unsigned int index) { return ptr + index; }
 
+  bool operator==(const cont_it& rhs) const { return ptr == rhs.ptr; }
   bool operator!=(const cont_it& rhs) const { return ptr != rhs.ptr; }
 
   bool operator!=(const T* rhs) const { return ptr != rhs; }

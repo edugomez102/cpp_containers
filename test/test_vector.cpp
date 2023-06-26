@@ -153,6 +153,20 @@ ut::suite<"edgs::vector"> vector_test = []
       expect(*(v.end() - 1) == 3);
     };
 
+    describe("const version") = [] {
+      const vector<int> a = {1, 0, 0, 0, 2};
+
+      it("begin() should point to first element") = [&] {
+        expect(a.begin().base() == a.data() &&
+               a.begin() .base()== &a[0]);
+      };
+
+      it("end() should point to last element") = [&] {
+        expect(a.end().base() == a.data() + a.size() &&
+               a.end().base() == &a[a.size()]);
+      };;
+    };
+
     it("should be able to iterate in range based for loop") = [] {
       vector<int> a = {1, 0, 0, 0, 2};
       int count = 0;
