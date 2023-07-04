@@ -16,7 +16,7 @@ ut::suite<"edgs::set"> set_test = []
   using namespace boost::ut;
   using namespace boost::ut::spec;
 
-  describe("constructors and capacity") = [] {
+  describe("constructors") = [] {
     it("should construct empty") = [] {
       edgs::set<int> s;
       expect(s.size() == 0 && s.empty());
@@ -65,6 +65,21 @@ ut::suite<"edgs::set"> set_test = []
           *(++it) == 9 );
     };
 
+    it("should construt, insert and reorder") = [] {
+      edgs::set<int> s { 2, 3, 8};
+      s.insert(5);
+      s.insert(4);
+      s.insert(9); // 2 3 4 5 8 9
+      auto it = s.begin();
+      expect(
+          *(it++) == 2 &&
+          *(it++) == 3 &&
+          *(it++) == 4 &&
+          *(it++) == 5 &&
+          *(it++) == 8 &&
+          *(it++) == 9 );
+    };
+
     it("should clear") = [] {
       edgs::set<int> s{4, 9, 2};
       expect(s.size() == 3 && !s.empty());
@@ -104,167 +119,37 @@ ut::suite<"edgs::set"> set_test = []
   describe("lookup" )  = [] {
 
     it("should contain and find") = [] {
-      edgs::set<int> s;
+      set<int> s;
       s.insert(1);
       expect(s.contains(1) && *s.find(1) == 1 );
     };
 
     it("should count") = [] {
-      edgs::set<int> s;
+      set<int> s;
       s.insert(8);
       s.insert(8);
       expect(s.count(8) == 1);
     };
+
+    it("upper_bound should return next possible element in set") = [] {
+      set<int> s{ 8, 2, 5, 4};
+      auto it = s.upper_bound(0);
+      expect(*it == 2);
+      it = s.upper_bound(2);
+      expect(*it == 4);
+      it = s.upper_bound(3);
+      expect(*it == 4);
+    };
+
+    it("lower_bound should return next possible element in set") = [] {
+      set<int> s{ 8, 2, 5, 4};
+      auto it = s.lower_bound(0);
+      expect(*it == 2);
+      it = s.lower_bound(2);
+      expect(*it == 2);
+      it = s.lower_bound(3);
+      expect(*it == 4);
+    };
   };
-
-
-
-  // "empty set"_test = [] {
-  //   set<int> s;
-  //   s.begin();
-  //   expect(s.empty());
-  //   expect(s.size() == 0);
-  // };
-  //
-  // "insertion and size"_test = [] {
-  //   set<int> s;
-  //   s.insert(42);
-  //   s.insert(10);
-  //   s.insert(99);
-  //   expect(s.size() == 3);
-  // };
-
-  // "containment check"_test = [] {
-  //   set<int> s{1, 2, 3};
-  //   expect(s.contains(2));
-  //   expect(!s.contains(4));
-  // };
-  //
-  // "deletion"_test = [] {
-  //   set<int> s{1, 2, 3};
-  //   s.erase(2);
-  //   expect(!s.contains(2));
-  //   expect(s.size() == 2);
-  // };
-  //
-  // "clear"_test = [] {
-  //   set<int> s{1, 2, 3};
-  //   s.clear();
-  //   expect(s.empty());
-  //   expect(s.size() == 0);
-  // };
-  //
-  // "count"_test = [] {
-  //   set<int> s{1, 2, 3};
-  //   expect(s.count(2) == 1);
-  //   expect(s.count(4) == 0);
-  // };
-  //
-  // "range-based for loop"_test = [] {
-  //   set<int> s{1, 2, 3};
-  //   int sum = 0;
-  //   for (const auto& element : s) {
-  //     sum += element;
-  //   }
-  //   expect(sum == 6);
-  // };
-  //
-  // "lower_bound"_test = [] {
-  //   set<int> s{1, 3, 5};
-  //   auto it = s.lower_bound(4);
-  //   expect(*it == 5);
-  // };
-  //
-  // "upper_bound"_test = [] {
-  //   set<int> s{1, 3, 5};
-  //   auto it = s.upper_bound(2);
-  //   expect(*it == 3);
-  // };
-  //
-  // "equal_range"_test = [] {
-  //   set<int> s{1, 3, 5};
-  //   auto [lower, upper] = s.equal_range(3);
-  //   expect(*lower == 3);
-  //   expect(*upper == 5);
-  // };
-  //
-  // "copy constructor"_test = [] {
-  //   set<int> s{1, 2, 3};
-  //   set<int> copy(s);
-  //   expect(copy == s);
-  // };
-  //
-  // "move constructor"_test = [] {
-  //   set<int> s{1, 2, 3};
-  //   set<int> moved(std::move(s));
-  //   expect(moved.size() == 3);
-  //   expect(s.empty());
-  // };
-  //
-  // "copy assignment operator"_test = [] {
-  //   set<int> s{1, 2, 3};
-  //   set<int> copy;
-  //   copy = s;
-  //   expect(copy == s);
-  // };
-  //
-  // "move assignment operator"_test = [] {
-  //   set<int> s{1, 2, 3};
-  //   set<int> moved;
-  //   moved = std::move(s);
-  //   expect(moved.size() == 3);
-  //   expect(s.empty());
-  // };
-  //
-  // "swap"_test = [] {
-  //   set<int> s1{1, 2, 3};
-  //   set<int> s2{4, 5, 6};
-  //   s1.swap(s2);
-  //   expect(s1.size() == 3);
-  //   expect(s2.size() == 3);
-  // };
-  //
-  // "insert duplicate"_test = [] {
-  //   set<int> s{1, 2, 3};
-  //   auto [it, success] = s.insert(2);
-  //   expect(*it == 2);
-  //   expect(!success);
-  //   expect(s.size() == 3);
-  // };
-  //
-  // "insert range"_test = [] {
-  //   set<int> s{1, 2, 3};
-  //   std::vector<int> values{4, 5, 6};
-  //   s.insert(values.begin(), values.end());
-  //   expect(s.size() == 6);
-  // };
-  //
-  // "erase range"_test = [] {
-  //   set<int> s{1, 2, 3, 4, 5};
-  //   s.erase(s.begin(), s.find(4));
-  //   expect(s.size() == 2);
-  //   expect(s.contains(4));
-  //   expect(s.contains(5));
-  // };
-  //
-  // "erase by value"_test = [] {
-  //   set<int> s{1, 2, 3};
-  //   s.erase(2);
-  //   expect(!s.contains(2));
-  //   expect(s.size() == 2);
-  // };
-  //
-  // "comparison operators"_test = [] {
-  //   set<int> s1{1, 2, 3};
-  //   set<int> s2{2, 3, 4};
-  //   set<int> s3{1, 2, 3};
-  //
-  //   expect(s1 != s2);
-  //   expect(s1 == s3);
-  //   expect(s1 < s2);
-  //   expect(s2 > s1);
-  //   expect(s1 <= s3);
-  //   expect(s2 >= s1);
-  // };
 
 };

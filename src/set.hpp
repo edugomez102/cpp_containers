@@ -72,25 +72,33 @@ namespace edgs {
 
     void clear() { rbt_.clear(); }
 
-    pair<iterator, bool> insert(const T& value) {
-      pair<Node*, bool> p = rbt_.insert(value);
+    pair<iterator, bool> insert(const T& key) {
+      pair<Node*, bool> p = rbt_.insert(key);
       return pair(iterator(p.first), p.second);
     }
 
     //--------------------------------------------------------------------
     // Lookup
     //--------------------------------------------------------------------
-    iterator find(const T& value) {
-      return iterator(rbt_.find(value));
+    iterator find(const T& key) {
+      return iterator(rbt_.find(key));
     }
 
-    bool contains(const T& value) {
-      return (rbt_.find(value));
+    bool contains(const T& key) {
+      return (rbt_.find(key));
     }
 
-    size_t count(const T& value) {
-      return size_t(rbt_.find(value) != nullptr);
+    size_t count(const T& key) {
+      return size_t(rbt_.find(key) != nullptr);
     }
+
+    iterator upper_bound(const T& key) {
+      return iterator(rbt_.upper_bound(key));
+    };
+
+    iterator lower_bound(const T& key) {
+      return iterator(rbt_.lower_bound(key));
+    };
 
     //--------------------------------------------------------------------
     // Iterators

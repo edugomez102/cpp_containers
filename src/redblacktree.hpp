@@ -64,6 +64,14 @@ namespace edgs {
       return find_impl(root_, key);
     }
 
+    Node* upper_bound(const T& key){
+      return bound_impl(key, UPPER);
+    }
+
+    Node* lower_bound(const T& key){
+      return bound_impl(key, LOWER);
+    }
+
     Node* min(){
       Node* n = root_;
       while(n && n->left_ != nullptr) n = n->left_;
@@ -244,6 +252,23 @@ namespace edgs {
 
     Node* root_{nullptr};
     size_t size_{0};
+
+    enum bound_t { UPPER = false, LOWER = true };
+    Node* bound_impl(const T& key, bound_t bt ){
+      Node* current = root_;
+      Node* result = nullptr;
+
+      while (current != nullptr) {
+        if ( bt ? current->data_ >= key :
+                  current->data_ > key) {
+          result = current;
+          current = current->left_;
+        } else {
+          current = current->right_;
+        }
+      }
+      return result;
+    }
 
   };
 
