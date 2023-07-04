@@ -5,7 +5,6 @@
 namespace ut = boost::ut;
 
 template<typename T>
-// using vector = std::vector<T>;
 using vector = edgs::vector<T>;
 
 /**
