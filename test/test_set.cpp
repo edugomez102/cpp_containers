@@ -18,12 +18,12 @@ ut::suite<"edgs::set"> set_test = []
 
   describe("constructors") = [] {
     it("should construct empty") = [] {
-      edgs::set<int> s;
+      set<int> s;
       expect(s.size() == 0 && s.empty());
     };
 
     it("should construct from initializer list ") = [] {
-      edgs::set<int> s{4, 9, 2};
+      set<int> s{4, 9, 2};
       auto it = s.begin();
       expect(
               *it == 2 &&
@@ -36,21 +36,21 @@ ut::suite<"edgs::set"> set_test = []
   describe("modifiers") = [] {
 
     it("should insert") = [] {
-      edgs::set<int> s;
+      set<int> s;
       s.insert(1);
       s.insert(2);
       expect(*s.begin()  == 1 && *(++s.begin()) == 2);
     };
 
     it("should not insert duplicate") = [] {
-      edgs::set<int> s;
+      set<int> s;
       s.insert(1);
       auto result = s.insert(1);
       expect(result.second == false && s.size() == 1);
     };
 
     it("should insert and reorder") = [] {
-      edgs::set<int> s;
+      set<int> s;
       s.insert(8);
       s.insert(2);
       s.insert(5);
@@ -66,7 +66,7 @@ ut::suite<"edgs::set"> set_test = []
     };
 
     it("should construt, insert and reorder") = [] {
-      edgs::set<int> s { 2, 3, 8};
+      set<int> s { 2, 3, 8};
       s.insert(5);
       s.insert(4);
       s.insert(9); // 2 3 4 5 8 9
@@ -81,7 +81,7 @@ ut::suite<"edgs::set"> set_test = []
     };
 
     it("should clear") = [] {
-      edgs::set<int> s{4, 9, 2};
+      set<int> s{4, 9, 2};
       expect(s.size() == 3 && !s.empty());
       s.clear();
       expect(s.size() == 0 && s.empty());
@@ -93,14 +93,12 @@ ut::suite<"edgs::set"> set_test = []
     it("should point to past-the-end empty") = [] {
       set<int> s;
       auto it = s.begin();
-      ++it;
       expect(it == s.end());
     };
 
     it("should point to past-the-end") = [] {
       set<int> s{1};
       auto it = s.begin();
-      ++it;
       ++it;
       expect(it == s.end());
     };
@@ -124,7 +122,7 @@ ut::suite<"edgs::set"> set_test = []
       expect(s.contains(1) && *s.find(1) == 1 );
     };
 
-    it("should count") = [] {
+    it("should count no duplicates") = [] {
       set<int> s;
       s.insert(8);
       s.insert(8);

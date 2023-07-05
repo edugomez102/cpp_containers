@@ -1,6 +1,7 @@
 #include "redblacktree.hpp"
 
 namespace edgs {
+
   template <typename T>
   struct set{
 
