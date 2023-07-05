@@ -2,6 +2,11 @@
 
 namespace edgs {
 
+  /**
+   * struct set - simple set implementation
+   *
+   * @tparam T key type of red-black-tree
+   */
   template <typename T>
   struct set{
 
