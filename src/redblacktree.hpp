@@ -3,17 +3,22 @@
 #include "pair.hpp"
 #include <stdio.h>
 
+// TODO: clean up
+// TODO: delete node
+
 namespace edgs {
 
-  // type need to have operator< overloaded
-  //
-  template <typename T>
+  /**
+   * struct RBtree - Simple red-black-tree implementation.
+   *
+   * @tparam T data type to be stored. 
+   *         It needs to have operator< overloaded
+   * @tparam K KeyOfValue, key type of the tree(in case T is a pair)
+   */
+  template <typename T, typename K = T>
   struct RBtree{
 
-    // enum class color_t { RED, BLACK };
     enum color_t { RED = false, BLACK = true };
-    // red false;
-    // black true
 
     struct Node{
       T data_{};
@@ -60,15 +65,22 @@ namespace edgs {
       }
     }
 
-    Node* find(const T& key){
-      return find_impl(root_, key);
+    Node* find(const K& key){
+      Node* n = root_;
+      while (n != nullptr && n->data_ != key) {
+        if (n->data_ > key)
+          n = n->left_;
+        else
+          n = n->right_;
+      }
+      return n;
     }
 
-    Node* upper_bound(const T& key){
+    Node* upper_bound(const K& key){
       return bound_impl(key, UPPER);
     }
 
-    Node* lower_bound(const T& key){
+    Node* lower_bound(const K& key){
       return bound_impl(key, LOWER);
     }
 
@@ -241,20 +253,11 @@ namespace edgs {
       n->parent_ = tmp;
     }
 
-    Node* find_impl(Node* n, const int key){
-      if(n == nullptr || key == n->data_)
-        return n;
-      else if ( key < n->data_)
-        return find_impl(n->left_ , key);
-      else 
-        return find_impl(n->right_ , key);
-    }
-
     Node* root_{nullptr};
     size_t size_{0};
 
     enum bound_t { UPPER = false, LOWER = true };
-    Node* bound_impl(const T& key, bound_t bt ){
+    Node* bound_impl(const K& key, bound_t bt ){
       Node* current = root_;
       Node* result = nullptr;
 
