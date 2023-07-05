@@ -8,7 +8,7 @@ template<typename K, typename V>
 using map = edgs::map<K, V>;
 
 /**
- * @brief tests for simple set
+ * @brief tests for simple map
  *
  */
 ut::suite<"edgs::map"> map_test = [] 
