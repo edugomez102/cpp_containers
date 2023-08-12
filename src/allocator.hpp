@@ -4,42 +4,38 @@
 
 namespace edgs {
 
+  /**
+   * struct allocator - Basic allocator
+   *
+   * @tparam T type to allocate
+   */
   template <typename T>
   struct allocator{
 
-    explicit allocator() = default;
-    allocator(const allocator&) = delete;
-    allocator(const allocator&&) = delete;
+    using value_type    = T;
+    using pointer       = T*;
+    using const_pointer = const T*;
+    using size_type     = size_t;
 
-    allocator& operator==(const allocator&) = delete;
-    allocator& operator==(const allocator&&) = delete;
+    allocator() = default;
+    allocator(const allocator&) {}
+    allocator(const allocator&&) {}
 
-    T* allocate(const size_t n) {
-      return address_ =  static_cast<T*>(::operator new(n * sizeof(T)));
+    pointer allocate(size_type n) {
+      return static_cast<pointer>(::operator new(n * sizeof(T)));
     }
 
-    void deallocate() {
-      ::operator delete(address_);
+    void deallocate(pointer p, size_type /* n */) {
+      ::operator delete(p);
     }
 
-    void construct(const size_t n) {
-      for (size_t i = 0; i < n ; i++)
-        new(address_ + i) T(); // TODO args
+    void construct(pointer p, const T& value) {
+      new (p) T(value);
     }
 
-    void destroy( const size_t n) {
-      for (size_t i = 0; i < n; i++) 
-        address_[i].~T();
-    };
-
-    static void deallocate(T* dm) {
-      ::operator delete(dm);
+    void destroy(pointer p) {
+      p->~T();
     }
 
-    constexpr T* address() const { return address_; }
-
-  private:
-
-    T* address_{nullptr};
   };
 }
