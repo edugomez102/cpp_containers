@@ -22,11 +22,6 @@ namespace edgs{
     using iterator = cont_it<T>;
     using vector_it = vector<T>::iterator;
 
-    vector(const vector&)  = delete;
-    vector(const vector&&) = delete;
-    vector& operator==(const vector&)  = delete;
-    vector& operator==(const vector&&) = delete;
-
     vector() 
       : al_{allocator<T>{}}
     {
@@ -55,10 +50,23 @@ namespace edgs{
       index_ = capacity_;
     }
 
+    vector(const vector& v) {
+      for (auto& i : v) push_back(i);
+    }
+
+    vector& operator=(const vector& v) {
+      clear();
+      for (auto& i : v) push_back(i);
+      return *this;
+    }
+
+    // vector(const vector&&) = delete;
+    // vector& operator=(const vector&&) = delete;
+
     ~vector() 
     {
       clear();
-      al_.deallocate();
+      al_.deallocate(start_, index_);
     }
 
     //--------------------------------------------------------------------
@@ -78,7 +86,7 @@ namespace edgs{
 
     void clear()
     {
-      al_.destroy(index_);
+      al_.destroy(start_);
       index_ = 0;
     }
 
@@ -92,13 +100,13 @@ namespace edgs{
       return insert_impl(position, value);
     }
 
-    // emplace
+    // vector_it  emplace
+
     // resize
 
     void push_back(const T& value)
     {
-      if (index_ >= capacity_)
-      {
+      if (index_ >= capacity_) {
         if(empty()) {
           create_storage(1);
           reallocate(1);
@@ -108,13 +116,14 @@ namespace edgs{
         }
       }
       start_[index_++] = value;
-
     }
 
     void pop_back() 
     {
-      if (index_ > 0)
-        al_.destroy(index_--);
+      if (index_ > 0) {
+        al_.destroy(start_);
+        index_--;
+      }
     }
 
     //--------------------------------------------------------------------
@@ -130,7 +139,7 @@ namespace edgs{
 
     T& at(const size_t i)
     {
-      if (i < 0 || index_ <= i) throw std::out_of_range("size is " + index_);
+      if (index_ <= i) throw std::out_of_range("size is " + index_);
         return start_[i];
     }
 
@@ -159,7 +168,8 @@ namespace edgs{
       T* aux = al_.allocate(newsize);
 
       edgs::copy(start_, start_ + capacity_, aux);
-      allocator<T>::deallocate(start_);
+      // allocator<T>::deallocate(start_);
+      al_.deallocate(start_, 0);
 
       start_    = aux;
       capacity_ = newsize;

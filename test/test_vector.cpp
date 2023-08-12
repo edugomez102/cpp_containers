@@ -179,8 +179,8 @@ ut::suite<Name> vector_test = []
 
 };
 
-auto vt = vector_test<edgs::vector, "edgs::vector">;
-auto vt2 = vector_test<std::vector, "std::vector">;
+auto _ = vector_test<edgs::vector, "edgs::vector">;
+auto _ = vector_test< std::vector, "std::vector">;
 
 // template<typename T>
 // using vector_alloc = std::vector<T, edgs::allocator<T> >;
