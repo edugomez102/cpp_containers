@@ -35,6 +35,29 @@ ut::suite<Name> vector_test = []
              v[2] == 3 && v[3] == 4);
       expect(v.capacity() == 4 && v.size() == 4);
     };
+
+    auto cpy = [](vector<int>& v, vector<int>& b) {
+      expect(v[0] == 1 && v[1] == 2 &&
+             v[2] == 3 && v[3] == 4);
+      expect(v.capacity() == 4 && v.size() == 4);
+
+      expect(b[0] == 1 && b[1] == 2 &&
+             b[2] == 3 && b[3] == 4);
+      expect(b.capacity() == 4 && b.size() == 4);
+    };
+
+    it("should copy vector") = [&] {
+      vector<int> v{1, 2, 3, 4};
+      vector<int> b(v);
+      cpy(v, b);
+    };
+
+    it("should copy assign vector") = [&] {
+      vector<int> v{1, 2, 3, 4};
+      vector<int> b{ 8 };
+      b = v;
+      cpy(v, b);
+    };
   };
 
   describe("modifiers") = [] {
@@ -179,11 +202,11 @@ ut::suite<Name> vector_test = []
 
 };
 
-auto _ = vector_test<edgs::vector, "edgs::vector">;
-auto _ = vector_test< std::vector, "std::vector">;
+auto s1  = vector_test<edgs::vector, "edgs::vector">;
+auto s2  = vector_test< std::vector, "std::vector">;
 
 // template<typename T>
 // using vector_alloc = std::vector<T, edgs::allocator<T> >;
-// auto vt3 = vector_test<
+// auto s3 = vector_test<
 //   vector_alloc,
 //   "std::vector with edgs::allocator">;
