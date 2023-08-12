@@ -48,7 +48,7 @@ namespace edgs {
 
     T& at(const size_t i)
     {
-      if (i < 0 || S <= i) throw std::out_of_range("size is " + S);
+      if (S <= i) throw std::out_of_range("size is " + S);
         return buf_[i];
     }
 
