@@ -4,14 +4,13 @@
 
 namespace ut = boost::ut;
 
-template<typename T>
-using vector = edgs::vector<T>;
 
 /**
  * @brief tests for simple small int vector
  *
  */
-ut::suite<"edgs::vector"> vector_test = [] 
+template < template <typename... T> typename vector, boost::ut::fixed_string Name>
+ut::suite<Name> vector_test = [] 
 {
   using namespace boost::ut;
   using namespace boost::ut::spec;
@@ -119,7 +118,7 @@ ut::suite<"edgs::vector"> vector_test = []
 
   describe("iterators" )   = [] {
 
-    using vector_it = vector<int>::iterator;
+    using vector_it = typename vector<int>::iterator;
     vector<int> a = {1, 0, 0, 0, 2};
 
     it("should point to start of array data") = [&] {
@@ -179,3 +178,12 @@ ut::suite<"edgs::vector"> vector_test = []
   };
 
 };
+
+auto vt = vector_test<edgs::vector, "edgs::vector">;
+auto vt2 = vector_test<std::vector, "std::vector">;
+
+// template<typename T>
+// using vector_alloc = std::vector<T, edgs::allocator<T> >;
+// auto vt3 = vector_test<
+//   vector_alloc,
+//   "std::vector with edgs::allocator">;
