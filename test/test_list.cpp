@@ -1,6 +1,9 @@
 #include <list>
 #include <list.hpp>
 #include <ut.hpp>
+#include <util.hpp>
+
+#include <allocator.hpp>
 
 namespace ut = boost::ut;
 
@@ -40,6 +43,36 @@ ut::suite<"edgs::list"> test_list = []
       expect(a.size() == 4 && a.front() == 1 &&
              a.back() == 4);
     };
+
+    it("should copy list") = []{
+      list<int> a = {1, 2, 3, 4};
+      list<int> b = a;
+      expect(a.size() == 4 && a.front() == 1 &&
+             a.back() == 4);
+      expect(b.size() == 4 && b.front() == 1 &&
+             b.back() == 4);
+      auto it = b.begin();
+      expect(   *it == 1 &&
+            *(++it) == 2 &&
+            *(++it) == 3 &&
+            *(++it) == 4 );
+    };
+
+    // it("move") = [] {
+    //   list<int> originalList;
+    //   for (int i = 1; i <= 5; ++i) {
+    //     originalList.push_back(i);
+    //   }
+    //
+    //   list<int> movedList = std::move(originalList);
+    //   expect(originalList.empty());
+    //
+    //   int expectedValue = 1;
+    //   for (const auto& value : movedList) {
+    //     expect(value == expectedValue);
+    //     ++expectedValue;
+    //   }
+    // };
 
   };
 

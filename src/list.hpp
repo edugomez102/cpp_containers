@@ -86,10 +86,17 @@ namespace edgs {
       }
     }
     
-    list(const list&)  = delete;
-    list(const list&&) = delete;
-    list& operator==(const list&)  = delete;
-    list& operator==(const list&&) = delete;
+    list(const list& l){
+      for (auto& i : l) {
+        if(i == *l.begin()) create_first(i);
+        else add_new_tail(i);
+      }
+    }
+    // list& operator=(const list&)  = delete;
+
+
+    // list(list&&) = default;
+    // list& operator=(const list&&) = delete;
 
     ~list() {
       clear();
