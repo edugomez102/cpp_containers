@@ -4,7 +4,8 @@
 
 namespace ut = boost::ut;
 
-ut::suite<"edgs::pair"> pair_test = []
+template < template <typename... T> typename pair, ut::fixed_string Name>
+ut::suite<Name> test_pair = [] 
 {
   using namespace boost::ut;
   using namespace boost::ut::spec;
@@ -66,3 +67,7 @@ ut::suite<"edgs::pair"> pair_test = []
     expect(p.first == 4 && p.second == 'a');
   };
 };
+
+inline auto s1 = test_pair<edgs::pair, "edgs::pair">;
+inline auto s2 = test_pair< std::pair, "std::pair">;
+

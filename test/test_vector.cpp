@@ -9,8 +9,8 @@ namespace ut = boost::ut;
  * @brief tests for simple small int vector
  *
  */
-template < template <typename... T> typename vector, boost::ut::fixed_string Name>
-ut::suite<Name> vector_test = [] 
+template < template <typename... T> typename vector, ut::fixed_string Name>
+ut::suite<Name> test_vector = [] 
 {
   using namespace boost::ut;
   using namespace boost::ut::spec;
@@ -170,7 +170,7 @@ ut::suite<Name> vector_test = []
     };
 
     it("should point to last") = [] {
-      std::vector<int> v{1, 2, 3};
+      vector<int> v{1, 2, 3};
       expect(*(v.end() - 1) == 3);
     };
 
@@ -202,11 +202,11 @@ ut::suite<Name> vector_test = []
 
 };
 
-auto s1  = vector_test<edgs::vector, "edgs::vector">;
-auto s2  = vector_test< std::vector, "std::vector">;
+inline auto s1 = test_vector<edgs::vector, "edgs::vector">;
+inline auto s2 = test_vector< std::vector, "std::vector">;
 
 // template<typename T>
 // using vector_alloc = std::vector<T, edgs::allocator<T> >;
-// auto s3 = vector_test<
+// auto s3 = test_vector<
 //   vector_alloc,
 //   "std::vector with edgs::allocator">;

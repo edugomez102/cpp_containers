@@ -3,14 +3,17 @@
 
 namespace ut = boost::ut;
 
-template<typename T, size_t S>
-using array = edgs::array<T, S>;
+// template<typename T, size_t S>
+// using array = edgs::array<T, S>;
 
 /**
  * @brief tests for simple small int array
  *
  */
-ut::suite<"edgs::array"> test_array = [] 
+// ut::suite<"edgs::array"> test_array = [] 
+
+template < template <typename T, size_t N> typename array, ut::fixed_string Name>
+ut::suite<Name> test_array = [] 
 {
   using namespace boost::ut;
   using namespace boost::ut::spec;
@@ -101,7 +104,7 @@ ut::suite<"edgs::array"> test_array = []
   };
 
   describe("iterators" )   = [] {
-    using array_it = array<int, 5>::array_it;
+    using array_it = typename array<int, 5>::array_it;
     array<int, 5> a = {1, 0, 0, 0, 2};
 
     it("should point to start of array data") = [&] {
@@ -165,4 +168,8 @@ ut::suite<"edgs::array"> test_array = []
 
   };
 };
+
+inline auto s1 = test_array<edgs::array, "edgs::array">;
+// TODO
+// static auto s2 = test_array< std::array, "std::array">;
 

@@ -7,14 +7,12 @@
 
 namespace ut = boost::ut;
 
-template<typename T>
-using list = edgs::list<T>;
-
 /**
  * @brief tests for simple small int list
  *
  */
-ut::suite<"edgs::list"> test_list = [] 
+template < template <typename... T> typename list, ut::fixed_string Name>
+ut::suite<Name> test_list = [] 
 {
   using namespace boost::ut;
   using namespace boost::ut::spec;
@@ -133,7 +131,7 @@ ut::suite<"edgs::list"> test_list = []
 
   describe("iterators" )   = [] {
 
-    using list_it = list<int>::iterator;
+    using list_it = typename list<int>::iterator;
 
     it("should point to start of list") = [&] {
       list<int> a = {1, 0, 0, 0, 2};
@@ -170,3 +168,7 @@ ut::suite<"edgs::list"> test_list = []
   };
 
 };
+
+inline auto s1  = test_list<edgs::list, "edgs::list">;
+inline auto s2  = test_list< std::list, "std::list">;
+

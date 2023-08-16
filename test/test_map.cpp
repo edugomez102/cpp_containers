@@ -2,16 +2,23 @@
 #include <map>
 #include <map.hpp>
 
+#include <allocator.hpp>
+
 namespace ut = boost::ut;
 
-template<typename K, typename V>
-using map = edgs::map<K, V>;
+// template<typename K, typename V>
+// using map = edgs::map<K, V>;
+// using map = std::map<K, V,
+//       std::less<K>,
+//       edgs::allocator<std::pair<const K, V> 
+//       >>;
 
 /**
  * @brief tests for simple map
  *
  */
-ut::suite<"edgs::map"> map_test = [] 
+template < template <typename... T> typename map, ut::fixed_string Name>
+ut::suite<Name> test_map = [] 
 {
   using namespace boost::ut;
   using namespace boost::ut::spec;
@@ -161,3 +168,6 @@ ut::suite<"edgs::map"> map_test = []
   };
 
 };
+
+inline auto s1 = test_map<edgs::map, "edgs::map">;
+inline auto s2 = test_map< std::map, "std::map">;

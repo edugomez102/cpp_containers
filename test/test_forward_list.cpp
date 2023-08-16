@@ -5,14 +5,16 @@
 
 namespace ut = boost::ut;
 
-template<typename T>
-using forward_list = edgs::forward_list<T>;
+// template<typename T>
+// using forward_list = edgs::forward_list<T>;
 
 /**
  * @brief tests for simple small int forward_list
  *
  */
-ut::suite<"edgs::forward_list"> test_forward_list = [] 
+// ut::suite<"edgs::forward_list"> test_forward_list = [] 
+template < template <typename... T> typename forward_list, ut::fixed_string Name>
+ut::suite<Name> test_forward_list = [] 
 {
   using namespace boost::ut;
   using namespace boost::ut::spec;
@@ -21,7 +23,7 @@ ut::suite<"edgs::forward_list"> test_forward_list = []
   };
 
   it("should construct") = [] {
-    edgs::forward_list<int> l;
+    forward_list<int> l;
     l.push_front(1);
     l.push_front(2);
     l.push_front(3);
@@ -31,7 +33,7 @@ ut::suite<"edgs::forward_list"> test_forward_list = []
           *(++it) == 1 );
   };
   it("shoud construct assign") = [] {
-    edgs::forward_list<int> l(4, 7);
+    forward_list<int> l(4, 7);
     auto it = l.begin();
     expect(   *it == 7 &&
           *(++it) == 7 &&
@@ -39,7 +41,7 @@ ut::suite<"edgs::forward_list"> test_forward_list = []
           *(++it) == 7 );
   };
   it("should create from initializer list") = []{
-    edgs::forward_list<int> l{1, 2, 3, 4, 5};
+    forward_list<int> l{1, 2, 3, 4, 5};
     auto it = l.begin();
     expect(   *it == 1 &&
           *(++it) == 2 &&
@@ -49,7 +51,7 @@ ut::suite<"edgs::forward_list"> test_forward_list = []
   };
 
   it("shoud assign") = [] {
-    edgs::forward_list<int> l;
+    forward_list<int> l;
     l.assign(4, 7);
     auto it = l.begin();
     expect(   *it == 7 &&
@@ -93,4 +95,7 @@ ut::suite<"edgs::forward_list"> test_forward_list = []
   };
 
 };
+
+// inline auto s1 = test_forward_list<edgs::forward_list, "edgs::forward_list">;
+// inline auto s2 = test_forward_list< std::forward_list, "std::forward_list">;
 

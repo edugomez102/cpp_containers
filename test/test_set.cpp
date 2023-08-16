@@ -4,14 +4,15 @@
 
 namespace ut = boost::ut;
 
-template<typename T>
-using set = edgs::set<T>;
+// template<typename K>
+// using set = edgs::set<K>;
 
 /**
  * @brief tests for simple set
  *
  */
-ut::suite<"edgs::set"> set_test = [] 
+template < template <typename... T> typename set, ut::fixed_string Name>
+ut::suite<Name> test_set = [] 
 {
   using namespace boost::ut;
   using namespace boost::ut::spec;
@@ -137,6 +138,23 @@ ut::suite<"edgs::set"> set_test = []
       expect(*it == 4);
       it = s.upper_bound(3);
       expect(*it == 4);
+
+    };
+
+    it("invalid upper_bound index should return end") = [] {
+      set<int> s;
+      auto it = s.upper_bound(500);
+      expect(it == s.end());
+      it = s.upper_bound(-500);
+      expect(it == s.end());
+
+      set<int> s2{ 1 };
+      it = s2.upper_bound(-500);
+      expect(*it == 1);
+      it = s2.upper_bound(500);
+      expect(it == s.end());
+      it = s2.upper_bound(1);
+      expect(it == s.end());
     };
 
     it("lower_bound should return next possible element in set") = [] {
@@ -148,6 +166,27 @@ ut::suite<"edgs::set"> set_test = []
       it = s.lower_bound(3);
       expect(*it == 4);
     };
+
+    it("invalid lower_bound index should return end") = [] {
+      set<int> s;
+      auto it = s.lower_bound(500);
+      expect(it == s.end());
+      it = s.lower_bound(-500);
+      expect(it == s.end());
+
+      set<int> s2{ 1 };
+      it = s2.lower_bound(-500);
+      expect(*it == 1);
+      it = s2.lower_bound(500);
+      expect(it == s2.end());
+      it = s2.lower_bound(1);
+      expect(it != s2.end() && *it == 1);
+    };
   };
 
 };
+
+inline auto s1 = test_set<edgs::set, "edgs::set">;
+// TODO
+// inline auto s2 = test_set< std::set, "std::set">;
+
