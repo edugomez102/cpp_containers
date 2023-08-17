@@ -155,11 +155,11 @@ namespace edgs{
     // Iterators
     //--------------------------------------------------------------------
 
-    vector_it begin() { return vector_it::begin(start_);        }
-    vector_it end()   { return vector_it::end(start_ + index_); }
+    vector_it begin() { return vector_it(start_);        }
+    vector_it end()   { return vector_it(start_ + index_); }
 
-    const vector_it begin() const { return vector_it::begin(start_);        }
-    const vector_it end()   const { return vector_it::end(start_ + index_); }
+    const vector_it begin() const { return vector_it(start_);        }
+    const vector_it end()   const { return vector_it(start_ + index_); }
 
   private:
 
@@ -194,7 +194,7 @@ namespace edgs{
         edgs::shift_right(start_ + ii, start_ + capacity_ , 1);
         start_[ii] = value;
         ++index_;
-        return vector_it::begin(start_ + ii);
+        return vector_it(start_ + ii);
       }
       else
       {

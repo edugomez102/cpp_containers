@@ -42,27 +42,47 @@ ut::suite<Name> test_array = []
              n[2] == 0 && n[3] == 0 && n[4] == 0 );
     };
 
-    it("should construct from raw array") = [] {
-      int raw[5]{1, 2 , 3, 4, 5};
-      auto a = array<int, 5>(raw);
-      auto n = a.data();
-      expect(n[0] == 1 && n[1] == 2 &&
-             n[2] == 3 && n[3] == 4 && n[4] == 5 );
+    it("should copy array") = [&] {
+      array<int, 4> a{1, 2, 3, 4};
+      array<int, 4> b(a);
+      expect(a[0] == b[0] && a[1] == b[1] && 
+             a[2] == b[2] && a[3] == b[3] &&
+             a.begin() != b.begin()
+          );
     };
 
-    it("should construct from raw array leaving zeros") = [] {
-      int raw[5]{1, 2};
-      auto a = array<int, 5>(raw);
-      auto n = a.data();
-      expect(n[0] == 1 && n[1] == 2 &&
-             n[2] == 0 && n[3] == 0 && n[4] == 0 );
+    it("should copy const array") = [&] {
+      const array<int, 4> a{1, 2, 3, 4};
+      array<int, 4> b(a);
+      expect(a[0] == b[0] && a[1] == b[1] && 
+             a[2] == b[2] && a[3] == b[3]
+            // TODO: const iterator
+            // a.begin() != b.begin()
+          );
     };
+
+    // it("should construct from raw array") = [] {
+    //   int raw[5]{1, 2 , 3, 4, 5};
+    //   auto a = array<int, 5>(raw);
+    //   auto n = a.data();
+    //   expect(n[0] == 1 && n[1] == 2 &&
+    //          n[2] == 3 && n[3] == 4 && n[4] == 5 );
+    // };
+    //
+    // it("should construct from raw array leaving zeros") = [] {
+    //   int raw[5]{1, 2};
+    //   auto a = array<int, 5>(raw);
+    //   auto n = a.data();
+    //   expect(n[0] == 1 && n[1] == 2 &&
+    //          n[2] == 0 && n[3] == 0 && n[4] == 0 );
+    // };
   };
 
   describe("copies") = [] {
+
     it("should copy its conents") = [] {
       array<int, 5> a{2, 2, 2, 2};
-      array<int, 5> b = a;
+      array<int, 5> b(a);
       // expect(a[0] == b[0] && a[1] == b[1]);
       a[0] = 9;
       expect(a[0] == 9 && b[0] == 2);
@@ -104,32 +124,30 @@ ut::suite<Name> test_array = []
   };
 
   describe("iterators" )   = [] {
-    using array_it = typename array<int, 5>::array_it;
+    using iterator = typename array<int, 5>::iterator;
     array<int, 5> a = {1, 0, 0, 0, 2};
 
     it("should point to start of array data") = [&] {
-      array_it it = a.begin();
-      const int& it_ref = it.operator*();
-      expect(it_ref == *a.data());
-      expect(it.base() == a.data());
+      iterator it = a.begin();
+      expect(*it == *a.data());
     };
 
     it("should point to next element of array data and back to first") = [&] {
-      array_it it = a.begin();
+      iterator it = a.begin();
       ++it;
-      expect(it.base() == a.data() + 1);
+      expect(it == a.data() + 1);
       --it;
-      expect(it.base() == a.data() && *it == a[0]);
+      expect(it == a.data() && *it == a[0]);
     };
 
     it("begin() should point to first element") = [&] {
-      expect(a.begin().base() == a.data() &&
-             a.begin().base() == &a[0]);
+      expect(a.begin() == a.data() &&
+             a.begin() == &a[0]);
     };
 
     it("end() should point to last element") = [&] {
-      expect(a.end().base() == a.data() + SIZE &&
-             a.end().base() == &a[SIZE]);
+      expect(a.end() == a.data() + SIZE &&
+             a.end() == &a[SIZE]);
     };
 
     it("should be able to iterate in range based for loop") = [] {
@@ -148,9 +166,6 @@ ut::suite<Name> test_array = []
 
     it("should throw an exception when invalid index") = [&] {
       array<int, 5> a = {1, 2, 3, 4, 5};
-      // expect(throws([&] {
-      //     a.at(-1);
-      // }));
 
       expect(throws([&] {
           a.at(999);
@@ -170,6 +185,5 @@ ut::suite<Name> test_array = []
 };
 
 inline auto s1 = test_array<edgs::array, "edgs::array">;
-// TODO
-// static auto s2 = test_array< std::array, "std::array">;
+inline auto s2 = test_array< std::array, "std::array">;
 

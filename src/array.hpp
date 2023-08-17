@@ -20,12 +20,22 @@ namespace edgs {
   struct array {
 
     array() = default;
-    array(T data[S]) { edgs::copy(data, data + S, buf_); }
+    array(const T data[S]) { edgs::copy(data, data + S, buf_); }
 
     array(const std::initializer_list<T>& c)
     {
       edgs::fill_from_initializer_list(c, buf_);
     }
+
+    array(const array& a)
+    {
+      edgs::copy(
+          const_cast<T*>(a.data()), 
+          const_cast<T*>(a.data()) + S, 
+          buf_);
+    }
+
+    array& operator=(const array& v) = delete;
 
     //--------------------------------------------------------------------
     // Capacity
@@ -67,8 +77,12 @@ namespace edgs {
     using iterator = cont_it<T>;
     using array_it = array<T, S>::iterator;
 
-    array_it begin() { return array_it::begin(buf_);   }
-    array_it end()   { return array_it::end(buf_ + S);   }
+    array_it begin() { return iterator(buf_);   }
+    array_it end()   { return iterator(buf_ + S);   }
+
+    // TODO: const iterator
+    // const array_it begin() const { return iterator(buf_);   }
+    // const array_it end()   const { return iterator(buf_ + S);   }
 
   private:
 
