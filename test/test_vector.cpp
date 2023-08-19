@@ -103,21 +103,21 @@ ut::suite<Name> test_vector = []
     };
 
     it("should insert element at begin") = [] {
-      edgs::vector<int> v{1, 2, 3};
+      vector<int> v{1, 2, 3};
 
       auto r = v.insert(v.begin(), 9);
       expect(v[0] == 9 && *r.base() == 9 );
     };
 
     it("should insert element at the end") = [] {
-      edgs::vector<int> v{1, 2, 3};
+      vector<int> v{1, 2, 3};
 
       auto r = v.insert(v.end(), 9);
       expect(v[3] == 9 && *r.base() == 9 );
     };
 
     it("should insert element at middle and increase capacity") = [] {
-      edgs::vector<int> v{1, 2, 3, 0};
+      vector<int> v{1, 2, 3, 0};
 
       const auto precapacity = v.capacity();
       auto r = v.insert(v.begin() + 2, 9);
@@ -125,7 +125,7 @@ ut::suite<Name> test_vector = []
           precapacity < v.capacity());
     };
     it("should insert const element at begin") = [] {
-      edgs::vector<int> v{1, 2, 3};
+      vector<int> v{1, 2, 3};
 
       const int value = 5;
       auto r = v.insert(v.begin(), value);
